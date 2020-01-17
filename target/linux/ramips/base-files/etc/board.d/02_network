@@ -189,7 +189,6 @@ ramips_setup_interfaces()
 	atp-52b|\
 	awm002-evb-4M|\
 	awm002-evb-8M|\
-	c20i|\
 	dir-645|\
 	f5d8235-v2|\
 	gl-mt300a|\
@@ -199,7 +198,6 @@ ramips_setup_interfaces()
 	jhr-n805r|\
 	jhr-n825r|\
 	jhr-n926r|\
-	mikrotik,rbm33g|\
 	mzk-wdpr|\
 	rb750gr3|\
 	rt-n14u|\
@@ -222,6 +220,11 @@ ramips_setup_interfaces()
 		ucidef_add_switch "switch0" \
 			"1:lan" "2:lan" "3:lan" "4:lan" "0:wan" "6@eth0"
 		;;
+	mikrotik,rbm33g)
+		ucidef_add_switch "switch0" \
+			"1:lan" "2:lan" "0:wan" "6@eth0"
+		;;
+	c20i|\
 	c50|\
 	tplink,c20-v1)
 		ucidef_add_switch "switch0" \
@@ -437,12 +440,12 @@ ramips_setup_macs()
 		wan_mac=$(mtd_get_mac_binary devdata 7)
 		;;
 	cy-swr1100|\
-	dch-m225)
-		lan_mac=$(mtd_get_mac_ascii factory lanmac)
-		;;
 	dir-645)
 		lan_mac=$(mtd_get_mac_ascii nvram lanmac)
 		wan_mac=$(mtd_get_mac_ascii nvram wanmac)
+		;;
+	dch-m225)
+		lan_mac=$(mtd_get_mac_ascii factory lanmac)
 		;;
 	dir-860l-b1)
 		lan_mac=$(mtd_get_mac_ascii factory lanmac)

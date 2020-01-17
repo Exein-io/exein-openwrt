@@ -3,7 +3,6 @@
 .*.swp
 /env
 /dl
-/.config
 /.config.old
 /bin
 /build_dir
@@ -16,6 +15,7 @@
 /overlay
 /package/feeds
 /package/openwrt-packages
+/*.patch
 key-build*
 *.orig
 *.rej

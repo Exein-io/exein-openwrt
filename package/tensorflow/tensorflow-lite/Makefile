@@ -1,3 +1,10 @@
+#
+# Copyright (C) 2019 Exein
+#
+# This is free software, licensed under the GNU General Public License v3.
+# See /LICENSE for more information.
+#
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=tensorflow-lite
@@ -6,7 +13,7 @@ PKG_RELEASE:=1
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/tensorflow/tensorflow.git
 PKG_SOURCE_VERSION:=v2.0.0
-PKG_MIRROR_HASH:=49b5f0495cd681cbcb5296a4476853d4aea19a43bdd9f179c928a977308a0617
+PKG_MIRROR_HASH:=08e6bcdccc83a48f52466d3eccca9cbee82e6be7095a6987c507d72394d37552
 PKG_BUILD_DEPENDS:=protobuf abseil flatbuffers eigen farmhash fft2d libdouble-conversion re2 nsync gemmlowp
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE

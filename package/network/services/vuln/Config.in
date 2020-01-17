@@ -1,0 +1,16 @@
+menu "Configuration"
+	depends on PACKAGE_vulnwww
+
+config VULNIP
+	string "Address"
+	default "0.0.0.0"
+	help
+		IP address
+
+config VULNPORT
+	int "Port"
+	default 1234
+	help
+		Port
+
+endmenu

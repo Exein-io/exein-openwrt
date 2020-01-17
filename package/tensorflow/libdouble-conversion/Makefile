@@ -26,6 +26,7 @@ include $(INCLUDE_DIR)/cmake.mk
 define Package/libdouble-conversion
   SECTION:=libs
 	CATEGORY:=Tensorflow
+	SUBMENU:=Libraries
   TITLE:=Efficient binary-decimal and decimal-binary conversion routines for IEEE doubles
   URL:=https://github.com/google/double-conversion
   DEPENDS:=+libstdcpp

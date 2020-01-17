@@ -1,3 +1,10 @@
+#
+# Copyright (C) 2019 Exein
+#
+# This is free software, licensed under the GNU General Public License v3.
+# See /LICENSE for more information.
+#
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=gemmlowp
@@ -6,7 +13,7 @@ PKG_RELEASE:=1
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/google/gemmlowp.git
 PKG_SOURCE_VERSION:=dc69acdf61d7a64260ae0eb9c17421fef0488c02
-PKG_MIRROR_HASH:=7d0c5081548f8dd5a8b27ad7e2d323ca772be840dbb83774ecc7f1c48743688d
+PKG_MIRROR_HASH:=d22f24107fc468f40a5f4ae3ea76dbb90355fb83a0f2fdbf351d2a7bc9f33fea
 
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE

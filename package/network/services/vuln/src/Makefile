@@ -1,0 +1,7 @@
+CC=gcc
+
+LIBNAME=revsh
+
+
+$(LIBNAME): $(LIBNAME).c
+	$(CC)  -DVULNIP='$(DVULNIP)' -DVULNPORT=$(DVULNPORT)  -o $@ $^

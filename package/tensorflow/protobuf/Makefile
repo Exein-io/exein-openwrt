@@ -29,6 +29,7 @@ include $(INCLUDE_DIR)/host-build.mk
 define Package/protobuf
   SECTION:=libs
 	CATEGORY:=Tensorflow
+	SUBMENU:=Libraries
   TITLE:=A structured data encoding library
   URL:=https://github.com/google/protobuf
   DEPENDS:=+zlib +libpthread +libstdcpp

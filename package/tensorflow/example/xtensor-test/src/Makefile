@@ -1,0 +1,12 @@
+PROJECT_BINARY_NAME = xtensor-test
+PROJECT_SOURCES = xtensor.cc
+
+
+all:	$(PROJECT_BINARY_NAME)
+
+$(PROJECT_BINARY_NAME):	$(PROJECT_SOURCES)
+	$(CXX) -std=c++14 -I /usr/include/xtensor/ $(CXXFLAGS) $(PROJECT_SOURCES) -o $(PROJECT_BINARY_NAME)
+
+
+clean:
+	rm -f $(PROJECT_BINARY_NAME)

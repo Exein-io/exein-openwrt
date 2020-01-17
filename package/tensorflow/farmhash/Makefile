@@ -1,3 +1,10 @@
+#
+# Copyright (C) 2019 Exein
+#
+# This is free software, licensed under the GNU General Public License v3.
+# See /LICENSE for more information.
+#
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=farmhash
@@ -6,7 +13,7 @@ PKG_RELEASE:=1
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/google/farmhash.git
 PKG_SOURCE_VERSION:=2f0e005b81e296fa6963e395626137cf729b710c
-PKG_MIRROR_HASH:=09b5da9eaa7c7f4f073053c1c6c398e320ca917e74e8f366fd84679111e87216
+PKG_MIRROR_HASH:=3b80c0a7d410fa8ba0aed21ec392dbd0ab182931fbe6f41a323095f2ac60f971
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=COPYING

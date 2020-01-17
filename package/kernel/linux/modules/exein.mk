@@ -15,7 +15,7 @@ define KernelPackage/exein
 endef
 
 define KernelPackage/exein/description
- Kernel modules for Exein interface
+	Kernel modules for Exein interface
 endef
 
 $(eval $(call KernelPackage,exein))

@@ -1,3 +1,10 @@
+#
+# Copyright (C) 2019 Exein
+#
+# This is free software, licensed under the GNU General Public License v3.
+# See /LICENSE for more information.
+#
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=abseil
@@ -6,7 +13,7 @@ PKG_RELEASE:=1
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/abseil/abseil-cpp.git
 PKG_SOURCE_VERSION:=cc8dcd307b76a575d2e3e0958a4fe4c7193c2f68
-PKG_MIRROR_HASH:=e35082e88b9da04f4d68094c05ba112502a5063712f3021adfa465306d238c76
+PKG_MIRROR_HASH:=5fbae7f0efe915c627b3b0cf0b5de7690d3af48dc90fb22a1e9359c60af83575
 PKG_BUILD_DEPENDS:=abseil/host
 
 PKG_LICENSE:=Apache-2.0

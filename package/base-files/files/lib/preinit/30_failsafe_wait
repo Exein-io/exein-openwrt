@@ -97,4 +97,5 @@ failsafe_wait() {
 	fi
 }
 
+
 boot_hook_add preinit_main failsafe_wait

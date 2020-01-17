@@ -1,3 +1,10 @@
+#
+# Copyright (C) 2019 Exein
+#
+# This is free software, licensed under the GNU General Public License v3.
+# See /LICENSE for more information.
+#
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=flatbuffers
@@ -6,7 +13,7 @@ PKG_RELEASE:=1
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/google/flatbuffers.git
 PKG_SOURCE_VERSION:=v1.11.0
-PKG_MIRROR_HASH:=3f4a286642094f45b1b77228656fbd7ea123964f19502f9ecfd29933fd23a50b
+PKG_MIRROR_HASH:=eb2f076e5043200836ed750f36954967f8a1a24309c13ec11055cc5bad5166f5
 
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE.txt

@@ -36,6 +36,15 @@ exein_prot_req_t registration={
 	.padding	= 0,
 	.pid		= 0,
 	};
+uint16_t put16w(uint16_t data)
+{
+#if __BYTE_ORDER__ == 4321
+	uint16_t app = data << 8;
+	return app + ((data & 0xff00)>>8);
+#else
+	return data;
+#endif 
+}
 
 int main(int argc, char* argv[])
 {
@@ -134,7 +143,7 @@ int main(int argc, char* argv[])
         		sendmsg(sock_fd,&msg,0);
 			}
 		} else { //child
-			buffer=malloc(atoi(argv[5])+100);
+			buffer=malloc(atoi(argv[5])+MAX_MSG);
 			printf("Receiving data\n");
 			memset(index, 0, sizeof(index));
 			while (1){
@@ -144,13 +153,15 @@ int main(int argc, char* argv[])
 				//for (int i=0; i<pktsize; i++) printf("%d ", *(data+i));
 				if (*(data+pktsize-1)==pseq) printf("Duplicate detected seqn=%d\n", *(data+pktsize-1));
 				pseq=*(data+pktsize-1);
-				memcpy(buffer + cpos*2 + sizeof(index), NLMSG_DATA(nlh), pktsize*2);
+				for (int i=0; i<pktsize; i++) *( ((uint16_t *) (buffer + cpos*2 + sizeof(index)) +i ) ) =  put16w( *(((uint16_t*) NLMSG_DATA(nlh))+i) );
+
 				index[ipos++]=cpos;
 				cpos+=pktsize;
 				if (((cpos*2 + sizeof(index))>atoi(argv[5]))||(ipos>MAX_MSG-1)) {
-					memcpy (buffer, index, sizeof(index));
+					for (int i=0; i<MAX_MSG; i++)  *(((uint16_t *) buffer)+i) = put16w(index[i]);
+
 					//printf("Spit out %d packets (%ld bytes)\n", ipos, cpos*2 + sizeof(index));
-					sendto(udpsockfd, buffer, atoi(argv[5])+100, 0, (const struct sockaddr *) &addr,  sizeof(addr));
+					sendto(udpsockfd, buffer, atoi(argv[5])+MAX_MSG, 0, (const struct sockaddr *) &addr,  sizeof(addr));
 					ipos=0;
 					cpos=0;
 					memset(index, 0, sizeof(index));

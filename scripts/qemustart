@@ -7,8 +7,7 @@ BR_LAN="${BR_LAN:-br-lan}"
 BR_WAN="${BR_WAN:-br-wan}"
 
 # Host network interface providing internet access for guest machines
-#IF_INET="${IF_INET:-eth0}"
-IF_INET="${IF_INET:-enxc8f750aa6556}"
+IF_INET="${IF_INET:-eth0}"
 
 # qemu-bridge-helper does two things here
 #
@@ -31,8 +30,8 @@ IF_INET="${IF_INET:-enxc8f750aa6556}"
 # The helper can be provided by package qemu-system-common on debian, or
 # qemu-kvm-common on rhel
 #
-#HELPER="${HELPER:-/usr/libexec/qemu-bridge-helper}"
-HELPER="${HELPER:-/usr/lib/qemu/qemu-bridge-helper}"
+HELPER="${HELPER:-/usr/libexec/qemu-bridge-helper}"
+
 ### end of global settings
 
 __errmsg() {

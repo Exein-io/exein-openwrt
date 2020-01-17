@@ -61,7 +61,7 @@ endef
 
 define Package/dropbear/conffiles
 /etc/dropbear/dropbear_rsa_host_key
-/etc/config/dropbear
+/etc/config/dropbear 
 endef
 
 define Package/dropbearconvert
@@ -144,10 +144,6 @@ define Package/dropbear/install
 	$(INSTALL_DIR) $(1)/usr/lib/opkg/info
 	$(INSTALL_DIR) $(1)/etc/dropbear
 	touch $(1)/etc/dropbear/dropbear_rsa_host_key
-
-	echo 2222 > exein
-	$(TARGET_CROSS)objcopy --add-section .exein=exein --set-section-flags .exein=noload,readonly $(1)/usr/sbin/dropbear
-	rm exein
 endef
 
 define Package/dropbearconvert/install

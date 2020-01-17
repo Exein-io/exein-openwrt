@@ -1,9 +1,23 @@
+/* Copyright 2019 Exein. All Rights Reserved.
+
+Licensed under the GNU General Public License, Version 3.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.gnu.org/licenses/gpl-3.0.html
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+==============================================================================*/
+
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
 
 #include <algorithm>
-#include <chrono>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -25,6 +39,7 @@ extern "C" {
 
 using namespace tflite;
 
+//#define EXEIN_DEBUG
 
 #define TFLITE_MINIMAL_CHECK(x)                              \
   if (!(x)) {                                                \
@@ -44,6 +59,7 @@ struct stack_pids {
     uint16_t size;
     uint16_t pids[32];
 } pids;
+
 
 // Utility functions
 
@@ -100,11 +116,21 @@ xt::xarray<float> make_prediction(tflite::Interpreter* interpreter, xt::xarray<i
   auto input_array = xt::cast<float>(xt::expand_dims(x ,0));
 
   float* input = interpreter->typed_input_tensor<float>(0);
+
+#ifdef EXEIN_DEBUG
+  printf("Value stored in a variable input is: %f\n",*input);
+#endif
+
   std::copy(input_array.begin(), input_array.end(), input);
 
   TFLITE_MINIMAL_CHECK(interpreter->Invoke() == kTfLiteOk);
 
   float* output_f = interpreter->typed_output_tensor<float>(0);
+
+#ifdef EXEIN_DEBUG
+  printf("Value stored in a variable output is: %f\n",*output_f);
+#endif
+
   std::vector<float> output_v {output_f, output_f + output_shape[1]};
   xt::xarray<float> output = xt::adapt(output_v, output_shape);
 
@@ -175,6 +201,7 @@ std::map<string, string> initialize_exein(const char* config_file) {
   return model_params;
 }
 
+
 /*
 Logic for the tag-specific MLE player.
 :param hook_arr: array storing the last N hooks for the given PID
@@ -184,22 +211,9 @@ Logic for the tag-specific MLE player.
 :return:
 */
 std::tuple<std::map<int, xt::xarray<float>>, std::map<int, xt::xarray<float>>, int>
-mle_player(const char* model_name, xt::xarray<int> hook_arr, uint16_t pid,
+mle_player(tflite::Interpreter* interpreter, xt::xarray<int> hook_arr, uint16_t pid,
            std::map<string, string> model_params, std::map<int, xt::xarray<float>> predictions,
            std::map<int, xt::xarray<float>> errors) {
-  // Load model
-  std::unique_ptr<tflite::FlatBufferModel> model =
-      tflite::FlatBufferModel::BuildFromFile(model_name);
-  TFLITE_MINIMAL_CHECK(model != nullptr);
-
-  // Build the interpreter
-  tflite::ops::builtin::BuiltinOpResolver resolver;
-  InterpreterBuilder builder(*model, resolver);
-  std::unique_ptr<Interpreter> interpreter;
-  builder(&interpreter);
-  TFLITE_MINIMAL_CHECK(interpreter != nullptr);
-  // Allocate tensor buffers.
-  TFLITE_MINIMAL_CHECK(interpreter->AllocateTensors() == kTfLiteOk);
 
   xt::xarray<float> pred;
 
@@ -225,12 +239,13 @@ mle_player(const char* model_name, xt::xarray<int> hook_arr, uint16_t pid,
   std::vector<int> output_shape = get_tensor_shape(interpreter->tensor(output));
 
   // make prediction and update prediction dict
-  pred = make_prediction(interpreter.get(), x, output_shape);
+  pred = make_prediction(interpreter, x, output_shape);
   predictions[pid] = pred;
 
   // check for signal
   int signal = 0;
-  if (predictions.count(pid)) {
+ // if (predictions.count(pid)) {
+  if (xt::mean(predictions[pid])() != 0) {
     xt::xarray<int> onehot_hid;
     int hid = hook_arr[hook_arr.size() - 1];
 
@@ -316,7 +331,24 @@ int main(int argc, char* argv[]) {
 
   exein_new_pid_notify_cb = &new_pid_notify_cb;
   exein_removed_pid_notify_cb = &removed_pid_notify_cb;
-  h = exein_agent_start(secret, tag);
+
+  if (!(h = exein_agent_start(secret, tag))) {
+      std::cout << "Can't starting Exein agent" << '\n';
+      return 1;
+  }
+
+  std::unique_ptr<tflite::FlatBufferModel> model =
+      tflite::FlatBufferModel::BuildFromFile(model_name);
+  TFLITE_MINIMAL_CHECK(model != nullptr);
+
+  // Build the interpreter
+  tflite::ops::builtin::BuiltinOpResolver resolver;
+  InterpreterBuilder builder(*model, resolver);
+  std::unique_ptr<Interpreter> interpreter;
+  builder(&interpreter);
+  TFLITE_MINIMAL_CHECK(interpreter != nullptr);
+  // Allocate tensor buffers.
+  TFLITE_MINIMAL_CHECK(interpreter->AllocateTensors() == kTfLiteOk);
 
   while (true) {
     if((pids.size > 0)) {
@@ -348,7 +380,7 @@ int main(int argc, char* argv[]) {
           std::cout << pidl4 << " input data: " << input_data << '\n';
           std::cout << "prediction for: " << pidl4 << std::endl;
 #endif
-          std::tie(predictions, errors, signal) = mle_player(model_name, input_data, pidl4, model_params, predictions, errors);
+          std::tie(predictions, errors, signal) = mle_player(interpreter.get(), input_data, pidl4, model_params, predictions, errors);
 
 #ifdef EXEIN_DEBUG
           for (auto e: errors) {

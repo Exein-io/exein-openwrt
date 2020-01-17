@@ -1,3 +1,10 @@
+#
+# Copyright (C) 2019 Exein
+#
+# This is free software, licensed under the GNU General Public License v3.
+# See /LICENSE for more information.
+#
+
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=re2
@@ -6,7 +13,7 @@ PKG_RELEASE:=1
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/google/re2.git
 PKG_SOURCE_VERSION:=2206f4f59a3862e5220712e1c4dcbd8b45f70861
-PKG_MIRROR_HASH:=99ff365dd58b2e44f1e7c708084654f3f447ae2346afda1fa0eef029d5d7fd0b
+PKG_MIRROR_HASH:=11f76085b5ddf4d85f8b51fe0efa9983dea58949484dc1507d72f7b183859004
 
 PKG_INSTALL:=1
 PKG_LICENSE:=BSD-3-Clause
