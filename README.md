@@ -1,9 +1,8 @@
 # Exein
 
-
 Exein framework's goal is to accomplish the task of protecting the target system from undesirable behavior, introducing the self-protecting and remote-monitoring set of tools into the embedded systems arena.
 
-![splash](/imgs/splash.jpg)
+![splash](/docs/imgs/splash.jpg)
 
 The natural position of a piece of software providing **Run-time anomaly detection** features is within the Linux kernel using the Linux Security Module ecosystem.
 
@@ -30,7 +29,7 @@ The **MLEPlayer** embodies the following functions:
 - Triggers the machine learning algorithm on the supplied data
 
 
-![design](/imgs/exein.png)
+![design](/docs/imgs/exein.png)
 
 
 ## User space
@@ -53,26 +52,42 @@ Exact versions in use are:
 
 Users can easily test the solution in an emulated environment by following these steps:
 
- 1. Download the repository
- 2. Make the config.exein the current openwrt configuration by using __cp config.exein .config__
- 3. Run the __make__ utility
- 4. Run with __qemu-system-arm__ by issuing the following command
+0. Install the dependencies for building OpenWRT and running Qemu  
+    You may refer to the official OpenWRT and Qemu docs
+    ```    
+    https://openwrt.org/docs/guide-developer/build-system/install-buildsystem 
+    https://openwrt.org/docs/guide-developer/quickstart-build-images
+    https://www.qemu.org/download/
+    ```
+    or issue the following command:
+    > sudo apt-get update  
+    > sudo apt-get -y install binutils build-essential bzip2 diffutils ecj fastjar file flex g++ gawk gcc gettext git grep java-propose-classpath libelf-dev libncurses5-dev libncursesw5-dev libssl-dev libz-dev make perl python python3 python3.5+ subversion unzip wget zlib1g-dev qemu
 
-```
-sudo qemu-system-arm -M virt -nographic -smp 1 -kernel bin/targets/armvirt-exein/32-glibc/openwrt-armvirt-exein-32-zImage-initramfs -append "rootwait root=/dev/vda console=ttyAMA0 loglevel=0 norandmaps" -netdev tap,ifname=tap0,id=eth0 -device virtio-net-device,netdev=eth0
-```
-5. After the system has started, activate the MLEPlayer by issuing the following
+1. Download the Exein OpenWRT repository
+    > git clone https://github.com/Exein-io/exein-openwrt.git  
+    > cd exein-openwrt
 
-```
-# dmesg |grep Exein
-[    0.001962] ExeinLSM - lsm is active: seed [857594974]
-[    9.280018] ExeinLKM - Interface module load complete. Interface ready.
-# tf-exein 857594974 /etc/exein/config-13107.ini /etc/exein/model-13107.tflite
-```
+2. Make the config-arm.exein the current openwrt configuration
+    > cp config-arm.exein .config
+
+4. Build with __make__ (you can add the __V=s__ or __V=cs__ option to increase verbosity)
+    > make download  
+    > make -j$(nproc)
+
+5. Run with __qemu-system-arm__
+    > sudo qemu-system-arm -M virt -nographic -smp 1 -kernel bin/targets/armvirt/32-glibc/openwrt-armvirt-32-zImage-initramfs -append "rootwait root=/dev/vda console=ttyAMA0 loglevel=0 norandmaps" -netdev tap,ifname=tap0,id=eth0 -device virtio-net-device,netdev=eth0
+
+6. After the system has started, activate the MLEPlayer by issuing the following
+    ```
+    # dmesg |grep Exein
+    [    0.001962] ExeinLSM - lsm is active: seed [1841749789]
+    [    9.280018] ExeinLKM - Interface module load complete. Interface ready.
+    # tf-exein 1841749789 /etc/exein/ARMEL-F-414162-config-13107.ini /etc/exein/ARMEL-F-414162-model-13107.tflite
+    ```
 
 ## Test an Exein protected application  
 
-![test-example](/imgs/test-example.gif)  
+![test-example](/docs/imgs/test-example.gif)  
 
 To make you taste how an Exein protected application performs, this repo has been equipped with the OpenWrt HTTP server behavior model.  
 
